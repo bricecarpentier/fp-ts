@@ -1,11 +1,17 @@
 {
-  "name": "fp-ts",
+  "name": "@bricecarpentier/fp-ts",
   "version": "2.14.0",
   "description": "Functional programming in TypeScript",
   "main": "./lib/index.js",
-  "module": "./es6/index.js",
-  "typings": "lib/index.d.ts",
+  "module": "./dist/index.js",
   "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js"
+  },
+  "files": [
+    "/dist/"
+  ],
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
     "lint-fix": "eslint --fix \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
@@ -14,9 +20,10 @@
     "test": "npm run lint && npm run prettier && npm run dtslint && npm run vitest && npm run docs",
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
-    "build": "tsc -p ./tsconfig.build.json && tsc -p ./tsconfig.build-es6.json && ts-node scripts/build",
+    "build:js": "esbuild --bundle src/*.ts --format=esm --outdir=dist --sourcemap --tsconfig=./tsconfig.build-es6.json",
+    "build:ts": "tsc -p ./tsconfig.build-es6.json",
+    "build": "npm run build:js && npm run build:ts",
     "postbuild": "prettier --loglevel=silent --write \"./dist/**/*.ts\"",
-    "prepublishOnly": "ts-node scripts/pre-publish",
     "mocha": "mocha -r ts-node/register test/*.ts",
     "dtslint": "dtslint dtslint",
     "docs": "docs-ts",
@@ -47,6 +54,7 @@
     "benchmark": "2.1.4",
     "docs-ts": "^0.7.2",
     "dtslint": "github:gcanti/dtslint",
+    "esbuild": "^0.17.18",
     "eslint": "^8.38.0",
     "eslint-plugin-deprecation": "^1.4.1",
     "eslint-plugin-import": "^2.27.5",
